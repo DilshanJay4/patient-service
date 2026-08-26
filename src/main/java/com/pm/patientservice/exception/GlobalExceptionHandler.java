@@ -22,34 +22,35 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         logException(ex);
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
         return ResponseEntity.badRequest().body(errors);
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<Map<String, Object>> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex,
+            HttpServletRequest request) {
 
         logException(ex);
         Map<String, Object> errorResponse = errorResponseBody(
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 request.getRequestURI(),
-                ex.getMessage()
-        );
+                ex.getMessage());
 
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(PatientNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handlePatientNotFoundException(PatientNotFoundException ex, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> handlePatientNotFoundException(PatientNotFoundException ex,
+            HttpServletRequest request) {
 
         logException(ex);
         Map<String, Object> errorResponse = errorResponseBody(
                 HttpStatus.NOT_FOUND.value(),
                 HttpStatus.NOT_FOUND.getReasonPhrase(),
                 request.getRequestURI(),
-                ex.getMessage()
-        );
+                ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
@@ -63,8 +64,7 @@ public class GlobalExceptionHandler {
                 element.getClassName(),
                 element.getMethodName(),
                 element.getLineNumber(),
-                ex.getMessage()
-        );
+                ex.getMessage());
     }
 
     private Map<String, Object> errorResponseBody(int status, String reasonPhrase, String path, String message) {
